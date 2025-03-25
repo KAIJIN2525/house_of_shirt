@@ -37,7 +37,7 @@ const Admin = () => {
       <div className="grid grid-cols-1 sm:grid-cols2 lg:grid-cols-3 gap-6">
         <div className="p-4 shadow-md rounded-lg">
           <h2 className="text-xl font-semibold">Revenue</h2>
-          <p className="text-2xl">${totalSales.toFixed(2)}</p>
+          <p className="text-2xl">₦{totalSales.toFixed(2)}</p>
         </div>
         <div className="p-4 shadow-md rounded-lg">
           <h2 className="text-xl font-semibold">Total Orders</h2>
@@ -63,7 +63,7 @@ const Admin = () => {
               <tr>
                 <th className="py-3 px-4">Order ID</th>
                 <th className="py-3 px-4">User</th>
-                <th className="py-3 px-4">Total Price.toFixed(2)</th>
+                <th className="py-3 px-4">Total Price</th>
                 <th className="py-3 px-4">status</th>
               </tr>
             </thead>

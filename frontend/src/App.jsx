@@ -15,12 +15,11 @@ import OrderDetails from "./pages/OrderDetails";
 import MyOrders from "./pages/MyOrders";
 import AdminLayout from "./components/Admin/AdminLayout";
 import UserManagement from "./components/Admin/UserManagement";
-import ProductManagement from "./components/Admin/ProductManagement";
 import EditProduct from "./components/Admin/EditProduct";
 import OrderManagement from "./components/Admin/OrderManagement";
 import ProtectedRoute from "./components/Common/ProtectedRoute";
 import Favorites from "./pages/Favorites";
-
+import Product from "./components/Admin/Product";
 
 const App = () => {
   return (
@@ -40,14 +39,17 @@ const App = () => {
           <Route path="order/:id" element={<OrderDetails />} />
           <Route path="my-orders" element={<MyOrders />} />
         </Route>
-        <Route path="/admin" element={
-          <ProtectedRoute role="admin">
-            <AdminLayout />
-          </ProtectedRoute>
-        }>
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<Admin />} />
           <Route path="users" element={<UserManagement />} />
-          <Route path="products" element={<ProductManagement />} />
+          <Route path="products" element={<Product/>} />
           <Route path="products/:id/edit" element={<EditProduct />} />
           <Route path="orders" element={<OrderManagement />} />
         </Route>

@@ -34,3 +34,26 @@ export const deleteTag = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+// Update a tag
+export const updateTag = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    const updatedTag = await Tag.findByIdAndUpdate(
+      id,
+      { name },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedTag) {
+      return res.status(404).json({ error: "Tag not found" });
+    }
+
+    res.status(200).json(updatedTag);
+  } catch (error) {
+    console.log("Error in updateTag controller:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+};

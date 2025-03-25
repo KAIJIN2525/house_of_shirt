@@ -5,10 +5,12 @@ import { loginUser } from "../redux/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { mergeCart } from "../redux/slices/cartSlice";
 import { toast } from "sonner";
+import { FaGoogle } from "react-icons/fa";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,10 +34,64 @@ const Login = () => {
     }
   }, [user, guestId, cart, navigate, isCheckoutRedirect, dispatch]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(loginUser({ email, password }));
-    toast.success("Login successful.");
+    if (!email || !password) {
+      setError("Please enter email and password.");
+      return;
+    }
+    setError("");
+
+    try {
+      const resultAction = await dispatch(loginUser({ email, password }));
+      if (loginUser.fulfilled.match(resultAction)) {
+        toast.success("Login successful.");
+      } else if (loginUser.rejected.match(resultAction)) {
+        const errorMessage =
+          resultAction.payload.message ||
+          "Login failed. Please check your credentials";
+        setError(errorMessage);
+        toast.error(errorMessage);
+      }
+    } catch (error) {
+      setError("An unexpected error occurred. Please try again.");
+      toast.error("An unexpected error occurred. Please try again.");
+    }
+  };
+
+  const handleGoogleLogin = () => {
+    const googleLoginWindow = window.open(
+      `${import.meta.env.VITE_BACKEND_URL}/api/users/auth/google`,
+      "_blank",
+      "width=500,height=600"
+    );
+
+    const handleMessage = (event) => {
+      if (event.origin !== import.meta.env.VITE_BACKEND_URL) {
+        console.error("Invalid origin:", event.origin);
+        return;
+      }
+
+      if (event.data.type === "oauth_complete") {
+        googleLoginWindow.close();
+
+        // Save the token and user data to localStorage
+        localStorage.setItem("userToken", event.data.token);
+        localStorage.setItem("userInfo", JSON.stringify(event.data.user));
+
+        // Dispatch the login action to update Redux state
+        dispatch(loginUser(event.data.user));
+
+        // Redirect the user
+        navigate("/");
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
   };
 
   return (
@@ -88,12 +144,27 @@ const Login = () => {
               placeholder="Enter your password"
             />
           </div>
+
+          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
           <button
             type="submit"
             className="w-full bg-black text-white p-3 rounded font-semibold hover:bg-gray-800 transition cursor-pointer"
           >
             {loading ? "Signing In..." : "Sign In"}
           </button>
+
+          <p className="text-xs text-gray-600 text-center mb-2">
+            OR SIGN IN WITH:
+          </p>
+          <div className="flex items-center justify-center w-full p-3 rounded font-semibold ">
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              className="bg-white text-gray-600 p-3 rounded font-semibold hover:bg-gray-100 transition cursor-pointer border border-gray-400"
+            >
+              <FaGoogle />
+            </button>
+          </div>
 
           <p className="mt-6 text-center text-sm">
             Don't have an account?{" "}

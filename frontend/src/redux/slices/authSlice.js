@@ -6,7 +6,7 @@ const userFromStorage = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
 
-//   Check for an existing guest ID in the localStorage or generate a new One
+// Check for an existing guest ID in the localStorage or generate a new one
 const initialGuestId =
   localStorage.getItem("guestId") || `guest_${new Date().getTime()}`;
 localStorage.setItem("guestId", initialGuestId);
@@ -25,6 +25,14 @@ export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (userData, { rejectWithValue }) => {
     try {
+      // For Google OAuth, no need to send credentials
+      if (userData.googleId) {
+        localStorage.setItem("userInfo", JSON.stringify(userData));
+        localStorage.setItem("userToken", userData.token);
+        return userData; // Return the user data directly
+      }
+
+      // For local login, send credentials to the backend
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/users/login`,
         userData
@@ -39,6 +47,7 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+// Async thunk for user registration
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (userData, { rejectWithValue }) => {
@@ -57,7 +66,7 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-//  Slice
+// Slice
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -65,7 +74,7 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
-      state.guestId = `guest_${new Date().getTime()}`; //Reset guestId on logout
+      state.guestId = `guest_${new Date().getTime()}`; // Reset guestId on logout
       localStorage.removeItem("userInfo");
       localStorage.removeItem("userToken");
       localStorage.setItem("guestId", state.guestId); // Set new guestId in localStorage

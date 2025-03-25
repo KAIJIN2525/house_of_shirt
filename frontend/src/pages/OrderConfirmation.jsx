@@ -43,7 +43,7 @@ const OrderConfirmation = () => {
   
     return (
       <div className="max-w-4xl mx-auto p-6 bg-white">
-        <h1 className="text-4xl font-bold text-center text-emerald-700 mb-8">
+        <h1 className="text-xl sm:text-4xl  font-bold text-center text-emerald-700 mb-8">
           Thank you for your Order!
         </h1>
   
@@ -52,15 +52,15 @@ const OrderConfirmation = () => {
             {/* Render order details */}
             <div className="flex justify-between mb-20">
               <div>
-                <h2 className="text-xl font-semibold">
+                <h2 className="text-md sm:text-xl font-semibold">
                   Order ID: {checkout._id}
                 </h2>
-                <p className="text-gray-500">
+                <p className="text-sm sm:text-base text-gray-500">
                   Date: {new Date(checkout.createdAt).toLocaleDateString()}
                 </p>
               </div>
               <div>
-                <p className="text-emerald-700 text-sm">
+                <p className="text-emerald-700 text-xs sm:text-sm">
                   Estimated Delivery:{" "}
                   {calculateEstimatedDelivery(checkout.createdAt)}
                 </p>

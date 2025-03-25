@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import {
   deleteProduct,
   fetchAdminProducts,
-} from "../../redux/slices/adminProductSlice";
+} from "../../../redux/slices/adminProductSlice";
 
 const ProductManagement = () => {
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ const ProductManagement = () => {
   );
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US').format(price);
+    return new Intl.NumberFormat("en-US").format(price);
   };
 
   useEffect(() => {
@@ -32,8 +32,7 @@ const ProductManagement = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="max-w-8xl sm:max-w-7xl mx-auto p-4 sm:p-6">
-      <h2 className="text-2xl font-bold mb-6">Product Management</h2>
+    <div className="mx-auto sm:p-6">
       <div className="overflow-x-auto shadow-md rounded-lg">
         <div className="min-w-full text-left text-gray-500">
           <table className="min-w-full text-left text-gray-700">
@@ -60,9 +59,11 @@ const ProductManagement = () => {
                         alt={product.images[0]?.altText || "Product Image"} // Provide a fallback alt text
                         className="size-12 rounded-full"
                       />
-                      {product.name}
+                      <p className="text-sm sm:text-base">{product.name}</p>
                     </td>
-                    <td className="p-4">₦{formatPrice(product.price)}</td>
+                    <td className="p-4">
+                      ₦{formatPrice(Math.round(product.price))}
+                    </td>
                     <td className="p-4">{product.sku}</td>
                     <td className="p-4">
                       {product.variants.reduce(

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PaypalButton from "./PaypalButton";
 import BankTransferDetails from "./BankTransferDetails";
-import StripeButton from "./StripeButton";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createCheckout,

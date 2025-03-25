@@ -13,6 +13,7 @@ import {
   removeFromFavorites,
 } from "../../redux/slices/favoritesSlice"; // Import favorites actions
 import { FaHeart, FaRegHeart } from "react-icons/fa"; // Import heart icons
+import { fetchTags } from "../../redux/slices/categoryTagSlice";
 
 // Map color names to valid CSS color values
 const colorMap = {
@@ -37,6 +38,8 @@ const ProductDetails = ({ productId }) => {
   );
   const { user, guestId } = useSelector((state) => state.auth);
   const favorites = useSelector((state) => state.favorites.items); // Get favorites from Redux store
+  const tags = useSelector((state) => state.categoryTags.tags); // Get tags from Redux store
+  const [tagNames, setTagNames] = useState([]);
   const [mainImage, setMainImage] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
@@ -44,6 +47,22 @@ const ProductDetails = ({ productId }) => {
   const [isAddingToCart, setIsAddingToCart] = useState(false); // Track if product is being added to cart
 
   const productFetchId = productId || id;
+
+  // Fetch tags when the component mounts
+  useEffect(() => {
+    dispatch(fetchTags());
+  }, [dispatch]);
+
+  // Map tag IDs to tag names
+  useEffect(() => {
+    if (selectedProduct?.tags && tags.length > 0) {
+      const names = selectedProduct.tags.map((tagId) => {
+        const tag = tags.find((t) => t._id === tagId);
+        return tag ? tag.name : "Unknown Tag";
+      });
+      setTagNames(names);
+    }
+  }, [selectedProduct, tags]);
 
   // Check if the current product is in favorites
   const isFavorite = favorites.some((item) => item._id === productFetchId);
@@ -345,7 +364,7 @@ const ProductDetails = ({ productId }) => {
                     </tr>
                     <tr>
                       <td className="font-semibold">Tags:</td>
-                      <td>{selectedProduct.tags?.join(", ")}</td>
+                      <td>{tagNames.join(", ")}</td>
                     </tr>
                   </tbody>
                 </table>
