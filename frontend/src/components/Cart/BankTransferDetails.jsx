@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { toast } from "sonner";
 
+
+
 const BankTransferDetails = ({ amount, onConfirm, isLoading }) => {
   const [hasConfirmedTransfer, setHasConfirmedTransfer] = useState(false);
 
