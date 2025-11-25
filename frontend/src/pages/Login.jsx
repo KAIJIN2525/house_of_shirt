@@ -5,11 +5,12 @@ import { loginUser } from "../redux/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { mergeCart } from "../redux/slices/cartSlice";
 import { toast } from "sonner";
-import { FaGoogle } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,6 +34,10 @@ const Login = () => {
       }
     }
   }, [user, guestId, cart, navigate, isCheckoutRedirect, dispatch]);
+
+  const handlePasswordToggle = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -153,7 +158,7 @@ const Login = () => {
             />
           </div>
 
-          <div className="mb-4">
+          <div className="mb-4 relative">
             <label
               className="block text-gray-700 text-sm font-semibold mb-2"
               htmlFor="password"
@@ -161,7 +166,7 @@ const Login = () => {
               Password
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={password}
               id="password"
               name="password"
@@ -169,6 +174,17 @@ const Login = () => {
               className="w-full p-2 border border-gray-300 rounded"
               placeholder="Enter your password"
             />
+            <button
+              onClick={handlePasswordToggle}
+              type="button"
+              className="absolute right-3 top-9 text-sm text-gray-600"
+            >
+              {showPassword ? (
+                <FaEyeSlash className="size-5" />
+              ) : (
+                <FaEye className="size-5" />
+              )}
+            </button>
           </div>
 
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
