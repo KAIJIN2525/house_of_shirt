@@ -1,7 +1,15 @@
 import express from "express";
 import passport from "passport";
 import jwt from "jsonwebtoken";
-import { login, profile, signup } from "../controllers/user.controller.js";
+import {
+  login,
+  profile,
+  signup,
+  verifyEmail,
+  resendVerificationEmail,
+  forgotPassword,
+  resetPassword,
+} from "../controllers/user.controller.js";
 import { protectRoute } from "../middleware/protectRoute.js";
 
 const router = express.Router();
@@ -10,6 +18,14 @@ const router = express.Router();
 router.post("/signup", signup);
 router.post("/login", login);
 router.get("/profile", protectRoute, profile);
+
+// Email verification routes
+router.get("/verify-email/:token", verifyEmail);
+router.post("/resend-verification", resendVerificationEmail);
+
+// Password reset routes
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password/:token", resetPassword);
 
 // Google OAuth routes
 router.get(
@@ -31,17 +47,43 @@ router.get(
       (err, token) => {
         if (err) {
           console.error("Error in generating JWT token:", err);
-          res.status(500).json({ message: "Error in generating JWT token" });
+          return res.redirect(
+            `${process.env.FRONTEND_URL}/login?error=token_generation_failed`
+          );
         }
 
-        // Send the user and token in response
+        // Prepare user data to send
+        const userData = {
+          _id: req.user._id,
+          name: req.user.name,
+          email: req.user.email,
+          role: req.user.role,
+        };
+
+        // Send the user and token in response via postMessage
         res.send(`
           <html>
             <body>
               <script>
-                window.opener.postMessage("oauth_complete", "${process.env.FRONTEND_URL}");
-                window.close();
+                const data = {
+                  type: "oauth_complete",
+                  token: "${token}",
+                  user: ${JSON.stringify(userData)}
+                };
+                
+                if (window.opener) {
+                  window.opener.postMessage(data, "${
+                    process.env.FRONTEND_URL || "http://localhost:5173"
+                  }");
+                  window.close();
+                } else {
+                  // Fallback: redirect to frontend with token in URL
+                  window.location.href = "${
+                    process.env.FRONTEND_URL || "http://localhost:5173"
+                  }/auth/callback?token=${token}";
+                }
               </script>
+              <p>Authentication successful! Closing window...</p>
             </body>
           </html>
         `);

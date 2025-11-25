@@ -3,38 +3,28 @@ import {
   createCheckout,
   createGuestCheckout,
   finalizeCheckout,
-  updateCheckout,
+  handlePaymentUpdate,
+  confirmBankPayment,
+  verifyPaystackPayment,
 } from "../controllers/checkout.controller.js";
 import { protectRoute } from "../middleware/protectRoute.js";
-import Checkout from "../models/checkout.model.js";
 
 const router = express.Router();
 
-router.post("/", protectRoute, createCheckout);
-router.post("/guest", createGuestCheckout);
-// Backend route to update checkout with payment method
-router.put("/:id", async (req, res) => {
-  const { paymentMethod } = req.body;
+// 1. Checkout Creation
+router.post("/", protectRoute, createCheckout); // For logged-in users
+router.post("/guest", createGuestCheckout); // For guest users
 
-  console.log("Request Body:", req.body); // Debug: Check the request payload
+// 2. Payment Handling Routes
+router.put("/:id/payment", protectRoute, handlePaymentUpdate); // Generic payment status updates
 
-  try {
-    const checkout = await Checkout.findById(req.params.id);
+// Paystack
+router.post("/verify-paystack", protectRoute, verifyPaystackPayment); // Paystack payment verification
 
-    if (!checkout) {
-      return res.status(404).json({ error: "Checkout not found" });
-    }
+// Bank Transfer
+router.put("/:id/confirm-bank", protectRoute, confirmBankPayment); // Specific bank transfer confirmation
 
-    checkout.paymentMethod = paymentMethod; // Ensure this line is present
-    await checkout.save();
-
-    res.status(200).json(checkout);
-  } catch (error) {
-    console.error("Error updating checkout:", error);
-    res.status(500).json({ error: error.message });
-  }
-});
-router.put("/:id/pay", protectRoute, updateCheckout);
+// 3. Order Finalization
 router.post("/:id/finalize", protectRoute, finalizeCheckout);
 
 export default router;

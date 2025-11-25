@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import ProductGrid from "./ProductGrid";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import Loader from "../Common/Loader";
 import {
   fetchProductDetails,
   fetchSimilarProducts,
@@ -120,9 +121,8 @@ const ProductDetails = ({ productId }) => {
   };
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US').format(price);
+    return new Intl.NumberFormat("en-US").format(price);
   };
-
 
   const handleAddToCart = async () => {
     if (!selectedColor || !selectedSize) {
@@ -167,7 +167,13 @@ const ProductDetails = ({ productId }) => {
   };
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <Loader
+        size="lg"
+        text="Loading product details..."
+        className="min-h-[500px]"
+      />
+    );
   }
 
   if (error) {

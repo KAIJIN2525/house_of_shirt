@@ -5,16 +5,16 @@ const products = [
     name: "Classic Oxford Button-Down Shirt",
     description:
       "This classic Oxford shirt is tailored for a polished yet casual look. Crafted from high-quality cotton, it features a button-down collar and a comfortable, slightly relaxed fit. Perfect for both formal and casual occasions, it comes with long sleeves, a button placket, and a yoke at the back. The shirt is finished with a gently rounded hem and adjustable button cuffs.",
-    price: 39.99,
-    discountPrice: 34.99,
+    price: 50000,
+    discountPrice: 45000,
     sku: "OX-SH-001",
     category: "67ba86f212ebfe713801756a",
     brand: "Urban Threads",
     variants: [
-      { size: "S", color: "Red", stock: 5 },
-      { size: "M", color: "Red", stock: 5 },
-      { size: "L", color: "Blue", stock: 5 },
-      { size: "XL", color: "Yellow", stock: 5 },
+      { size: "S", color: "Red", stock: 15, lowStockThreshold: 10 },
+      { size: "M", color: "Red", stock: 25, lowStockThreshold: 10 },
+      { size: "L", color: "Blue", stock: 8, lowStockThreshold: 10 },
+      { size: "XL", color: "Yellow", stock: 3, lowStockThreshold: 5 },
     ],
     collections: "Business Casual",
     material: "Cotton",
@@ -36,16 +36,16 @@ const products = [
     name: "Slim-Fit Stretch Shirt",
     description:
       "A versatile slim-fit shirt perfect for business or evening events. Designed with a fitted silhouette, the added stretch provides maximum comfort throughout the day. Features a crisp turn-down collar, button placket, and adjustable cuffs.",
-    price: 29.99,
-    discountPrice: 24.99,
+    price: 60000,
+    discountPrice: 55000,
     sku: "SLIM-SH-002",
     category: "67ba86f212ebfe713801756a",
     brand: "Modern Fit",
     variants: [
-      { size: "S", color: "Black", stock: 8 },
-      { size: "M", color: "Black", stock: 7 },
-      { size: "L", color: "Navy Blue", stock: 10 },
-      { size: "XL", color: "Burgundy", stock: 10 },
+      { size: "S", color: "Black", stock: 2, lowStockThreshold: 5 },
+      { size: "M", color: "Black", stock: 0, lowStockThreshold: 5 },
+      { size: "L", color: "Navy Blue", stock: 20, lowStockThreshold: 8 },
+      { size: "XL", color: "Burgundy", stock: 12, lowStockThreshold: 8 },
     ],
     collections: "Formal Wear",
     material: "Cotton Blend",
@@ -67,16 +67,16 @@ const products = [
     name: "Casual Denim Shirt",
     description:
       "This casual denim shirt is made from lightweight cotton denim. It features a regular fit, snap buttons, and a straight hem. With Western-inspired details, this shirt is perfect for layering or wearing solo.",
-    price: 49.99,
-    discountPrice: 44.99,
+    price: 37500,
+    discountPrice: 32000,
     sku: "CAS-DEN-003",
     category: "67ba86f212ebfe713801756a",
     brand: "Street Style",
     variants: [
-      { size: "S", color: "Light Blue", stock: 5 },
-      { size: "M", color: "Light Blue", stock: 5 },
-      { size: "L", color: "Dark Wash", stock: 5 },
-      { size: "XL", color: "Dark Wash", stock: 5 },
+      { size: "S", color: "Light Blue", stock: 18, lowStockThreshold: 10 },
+      { size: "M", color: "Light Blue", stock: 22, lowStockThreshold: 10 },
+      { size: "L", color: "Dark Wash", stock: 5, lowStockThreshold: 8 },
+      { size: "XL", color: "Dark Wash", stock: 1, lowStockThreshold: 5 },
     ],
     collections: "Casual Wear",
     material: "Denim",
@@ -98,7 +98,7 @@ const products = [
     name: "Printed Resort Shirt",
     description:
       "Designed for summer, this printed resort shirt is perfect for vacation or weekend getaways. It features a relaxed fit, short sleeves, and a camp collar. The all-over tropical print adds a playful vibe.",
-    price: 29.99,
+    price: 80000,
     discountPrice: 22.99,
     sku: "PRNT-RES-004",
     category: "67ba86f212ebfe713801756a",
@@ -182,7 +182,7 @@ const products = [
       {
         url: "https://burst.shopifycdn.com/photos/white-shirt-pink-wall.jpg?width=373&format=pjpg&exif=0&iptc=0",
         altText: "Polo T-Shirt Close View",
-      },  
+      },
     ],
     rating: 4.3,
     numReviews: 22,
@@ -886,7 +886,7 @@ const products = [
       {
         url: "https://images.pexels.com/photos/1894038/pexels-photo-1894038.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
         altText: "Knitted Cropped Top",
-      }
+      },
     ],
     rating: 4.6,
     numReviews: 15,
@@ -1179,6 +1179,5 @@ const products = [
     numReviews: 22,
   },
 ];
-
 
 export default products;

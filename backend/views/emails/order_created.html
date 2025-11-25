@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Created - House of Shirt</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      .container {
+        max-width: 600px;
+        margin: 20px auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px 20px;
+        text-align: center;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 28px;
+      }
+      .content {
+        padding: 30px 20px;
+      }
+      .status-badge {
+        display: inline-block;
+        background-color: #10b981;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+      .order-info {
+        background-color: #f9fafb;
+        border-radius: 6px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+      .info-label {
+        font-weight: 600;
+        color: #6b7280;
+      }
+      .info-value {
+        color: #111827;
+      }
+      .products-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+      .products-table th {
+        background-color: #f3f4f6;
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+        color: #374151;
+        border-bottom: 2px solid #e5e7eb;
+      }
+      .products-table td {
+        padding: 12px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      .total-section {
+        background-color: #f9fafb;
+        border-radius: 6px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+      .total-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+      .total-row.grand-total {
+        border-top: 2px solid #e5e7eb;
+        padding-top: 10px;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .shipping-info {
+        background-color: #eff6ff;
+        border-left: 4px solid #3b82f6;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 4px;
+      }
+      .footer {
+        background-color: #f9fafb;
+        padding: 20px;
+        text-align: center;
+        font-size: 14px;
+        color: #6b7280;
+      }
+      .support-link {
+        color: #667eea;
+        text-decoration: none;
+      }
+      @media only screen and (max-width: 600px) {
+        .container {
+          margin: 0;
+          border-radius: 0;
+        }
+        .info-row {
+          flex-direction: column;
+        }
+        .info-label {
+          margin-bottom: 5px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🎉 Order Created Successfully!</h1>
+      </div>
+
+      <div class="content">
+        <p>Hi <strong>{{customerName}}</strong>,</p>
+
+        <p>
+          Thank you for your order! We've received your order and it's being
+          processed.
+        </p>
+
+        <div class="status-badge">Order Created</div>
+
+        <div class="order-info">
+          <div class="info-row">
+            <span class="info-label">Order Number:</span>
+            <span class="info-value"><strong>{{orderNumber}}</strong></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Order Date:</span>
+            <span class="info-value">{{orderDate}}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Payment Method:</span>
+            <span class="info-value">{{paymentMethod}}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Payment Status:</span>
+            <span class="info-value">{{paymentStatus}}</span>
+          </div>
+        </div>
+
+        <h3>Order Items</h3>
+        <table class="products-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{orderItems}}
+          </tbody>
+        </table>
+
+        <div class="total-section">
+          <div class="total-row">
+            <span>Subtotal:</span>
+            <span>₦{{subtotal}}</span>
+          </div>
+          <div class="total-row">
+            <span>Delivery Fee:</span>
+            <span>₦{{deliveryFee}}</span>
+          </div>
+          <div class="total-row grand-total">
+            <span>Total:</span>
+            <span>₦{{totalAmount}}</span>
+          </div>
+        </div>
+
+        <div class="shipping-info">
+          <h4 style="margin-top: 0">Shipping Address</h4>
+          <p style="margin: 5px 0">{{shippingAddress}}</p>
+          <p style="margin: 5px 0">{{shippingCity}}, {{shippingState}}</p>
+          <p style="margin: 5px 0">{{shippingPhone}}</p>
+        </div>
+
+        <p>
+          {{#if deliveryTime}}
+          <strong>Estimated Delivery:</strong> {{deliveryTime}}<br />
+          {{/if}} We'll send you another email when your order is confirmed and
+          ready for delivery.
+        </p>
+
+        <p>
+          If you have any questions, feel free to
+          <a href="mailto:support@houseofshirt.com" class="support-link"
+            >contact our support team</a
+          >.
+        </p>
+      </div>
+
+      <div class="footer">
+        <p>&copy; 2024 House of Shirt. All rights reserved.</p>
+        <p>Lagos, Nigeria</p>
+      </div>
+    </div>
+  </body>
+</html>

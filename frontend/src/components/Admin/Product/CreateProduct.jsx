@@ -10,7 +10,7 @@ import {
 } from "../../../redux/slices/categoryTagSlice";
 import { toast } from "sonner";
 
-const CreateProduct = ({ setActiveTab}) => {
+const CreateProduct = ({ setActiveTab }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error } = useSelector((state) => state.adminProducts);
@@ -30,6 +30,8 @@ const CreateProduct = ({ setActiveTab}) => {
     material: "",
     gender: "",
     images: [],
+    isPublished: true, // Default to published
+    isFeatured: false, // Default to not featured
   });
 
   const [uploading, setUploading] = useState(false); // State for image upload
@@ -161,6 +163,8 @@ const CreateProduct = ({ setActiveTab}) => {
           material: "",
           gender: "",
           images: [],
+          isPublished: true, // Reset to published
+          isFeatured: false, // Reset to not featured
         });
         setActiveTab("products"); // Switch to the "Products" tab
       })
@@ -170,7 +174,7 @@ const CreateProduct = ({ setActiveTab}) => {
       });
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loader size="md" text="Loading..." />;
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -242,16 +246,18 @@ const CreateProduct = ({ setActiveTab}) => {
         {/* SKU */}
         <div className="mb-6">
           <label htmlFor="sku" className="block font-semibold mb-2">
-            SKU
+            SKU{" "}
+            <span className="text-gray-500 font-normal text-sm">
+              (Optional - Auto-generated if left empty)
+            </span>
           </label>
           <input
             type="text"
             name="sku"
             value={productData.sku}
             onChange={handleChange}
-            placeholder="SKU..."
+            placeholder="Leave empty to auto-generate (e.g., TW-M-001)"
             className="w-full border border-gray-300 rounded-md p-2"
-            required
           />
         </div>
 
@@ -443,13 +449,60 @@ const CreateProduct = ({ setActiveTab}) => {
           </select>
         </div>
 
+        {/* Publish Status */}
+        <div className="mb-6 grid grid-cols-2 gap-6">
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              id="isPublished"
+              name="isPublished"
+              checked={productData.isPublished}
+              onChange={(e) =>
+                setProductData((prev) => ({
+                  ...prev,
+                  isPublished: e.target.checked,
+                }))
+              }
+              className="w-5 h-5 text-green-600 border-gray-300 rounded focus:ring-green-500"
+            />
+            <label htmlFor="isPublished" className="font-semibold">
+              Published{" "}
+              <span className="text-sm font-normal text-gray-600">
+                (Visible in store & inventory)
+              </span>
+            </label>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              id="isFeatured"
+              name="isFeatured"
+              checked={productData.isFeatured}
+              onChange={(e) =>
+                setProductData((prev) => ({
+                  ...prev,
+                  isFeatured: e.target.checked,
+                }))
+              }
+              className="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+            />
+            <label htmlFor="isFeatured" className="font-semibold">
+              Featured{" "}
+              <span className="text-sm font-normal text-gray-600">
+                (Show in featured section)
+              </span>
+            </label>
+          </div>
+        </div>
+
         {/* Image Uploader */}
         <div className="mb-6">
           <label htmlFor="image" className="block font-semibold mb-2">
             Image
           </label>
           <input type="file" name="image" onChange={handleImageUpload} />
-          {uploading && <p>Uploading image...</p>}
+          {uploading && <Loader size="sm" text="Uploading image..." />}
           <div className="flex gap-4 mt-4">
             {productData.images.map((image, index) => (
               <div key={index} className="relative">

@@ -31,7 +31,7 @@ const PaypalButton = ({ amount, onSuccess, onError }) => {
   }, [amount]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <Loader size="sm" text="Loading payment..." />;
   }
 
   if (error) {

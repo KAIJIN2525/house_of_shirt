@@ -17,9 +17,11 @@ import AdminLayout from "./components/Admin/AdminLayout";
 import UserManagement from "./components/Admin/UserManagement";
 import EditProduct from "./components/Admin/EditProduct";
 import OrderManagement from "./components/Admin/OrderManagement";
+import InventoryManagement from "./components/Admin/InventoryManagement";
 import ProtectedRoute from "./components/Common/ProtectedRoute";
 import Favorites from "./pages/Favorites";
 import Product from "./components/Admin/Product";
+import VerifyEmail from "./pages/VerifyEmail";
 
 const App = () => {
   return (
@@ -30,6 +32,7 @@ const App = () => {
           <Route index element={<Home />} />
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Register />} />
+          <Route path="verify-email" element={<VerifyEmail />} />
           <Route path="profile" element={<Profile />} />
           <Route path="favorites" element={<Favorites />} />
           <Route path="collections/:collection" element={<Collection />} />
@@ -49,9 +52,10 @@ const App = () => {
         >
           <Route index element={<Admin />} />
           <Route path="users" element={<UserManagement />} />
-          <Route path="products" element={<Product/>} />
+          <Route path="products" element={<Product />} />
           <Route path="products/:id/edit" element={<EditProduct />} />
           <Route path="orders" element={<OrderManagement />} />
+          <Route path="inventory" element={<InventoryManagement />} />
         </Route>
       </Routes>
     </div>

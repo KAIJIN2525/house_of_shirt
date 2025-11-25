@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Delivered - House of Shirt</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      .container {
+        max-width: 600px;
+        margin: 20px auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        color: white;
+        padding: 30px 20px;
+        text-align: center;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 28px;
+      }
+      .content {
+        padding: 30px 20px;
+      }
+      .status-badge {
+        display: inline-block;
+        background-color: #10b981;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+      .order-info {
+        background-color: #f9fafb;
+        border-radius: 6px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+      .info-label {
+        font-weight: 600;
+        color: #6b7280;
+      }
+      .info-value {
+        color: #111827;
+      }
+      .celebration-box {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: center;
+      }
+      .celebration-icon {
+        font-size: 64px;
+        margin-bottom: 10px;
+      }
+      .feedback-box {
+        background-color: #eff6ff;
+        border-left: 4px solid #3b82f6;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 4px;
+      }
+      .footer {
+        background-color: #f9fafb;
+        padding: 20px;
+        text-align: center;
+        font-size: 14px;
+        color: #6b7280;
+      }
+      .support-link {
+        color: #667eea;
+        text-decoration: none;
+      }
+      @media only screen and (max-width: 600px) {
+        .container {
+          margin: 0;
+          border-radius: 0;
+        }
+        .info-row {
+          flex-direction: column;
+        }
+        .info-label {
+          margin-bottom: 5px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🎊 Order Delivered!</h1>
+      </div>
+
+      <div class="content">
+        <p>Hi <strong>{{customerName}}</strong>,</p>
+
+        <div class="celebration-box">
+          <div class="celebration-icon">🎉</div>
+          <h2 style="margin: 10px 0; color: #92400e">
+            Your order has been delivered!
+          </h2>
+          <p style="margin: 10px 0; color: #78350f">
+            We hope you love your purchase!
+          </p>
+        </div>
+
+        <div class="status-badge">Delivered</div>
+
+        <div class="order-info">
+          <div class="info-row">
+            <span class="info-label">Order Number:</span>
+            <span class="info-value"><strong>{{orderNumber}}</strong></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Delivered On:</span>
+            <span class="info-value">{{deliveredDate}}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Total Amount:</span>
+            <span class="info-value">₦{{totalAmount}}</span>
+          </div>
+        </div>
+
+        <p>
+          Thank you for shopping with House of Shirt! We hope you enjoy your new
+          items. If you have any issues with your order, please don't hesitate
+          to contact us within 7 days.
+        </p>
+
+        <div class="feedback-box">
+          <p style="margin: 5px 0; font-weight: 600">
+            We'd love to hear from you!
+          </p>
+          <p style="margin: 10px 0">
+            Your feedback helps us improve our service. If you're happy with
+            your purchase, please consider leaving us a review or sharing your
+            experience with friends and family.
+          </p>
+        </div>
+
+        <p>
+          <strong>Returns & Exchanges:</strong><br />
+          If you're not completely satisfied with your purchase, we offer
+          returns and exchanges within 7 days of delivery. Please ensure items
+          are unused and in original packaging.
+        </p>
+
+        <p style="text-align: center; margin: 30px 0">
+          <strong>Thank you for choosing House of Shirt!</strong><br />
+          We look forward to serving you again soon! 👕
+        </p>
+
+        <p>
+          Questions? Contact us at
+          <a href="mailto:support@houseofshirt.com" class="support-link"
+            >support@houseofshirt.com</a
+          >.
+        </p>
+      </div>
+
+      <div class="footer">
+        <p>&copy; 2024 House of Shirt. All rights reserved.</p>
+        <p>Lagos, Nigeria</p>
+      </div>
+    </div>
+  </body>
+</html>

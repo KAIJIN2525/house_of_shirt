@@ -1,22 +1,25 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import PaystackPop from "@paystack/inline-js";
 
 const PaystackButton = ({ amount, onSuccess, onError }) => {
+  const { user } = useSelector((state) => state.auth);
+
   const handlePayment = () => {
     const paystack = new PaystackPop();
 
     paystack.newTransaction({
-      key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY, // Your Paystack public key
-      email: "user@example.com", // Replace with the user's email
+      key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
+      email: user?.email || "guest@example.com", // Use logged-in user's email
       amount: amount * 100, // Convert amount to kobo (Paystack uses kobo for Naira)
-      ref: new Date().getTime().toString(), // Unique reference for each transaction
+      ref: `${new Date().getTime()}`, // Unique reference for each transaction
       onSuccess: (response) => {
         console.log("Payment Successful:", response);
-        onSuccess(response); // Call the onSuccess callback
+        onSuccess(response); // Call the onSuccess callback with payment response
       },
       onCancel: () => {
         console.log("Payment Cancelled");
-        onError("Payment was cancelled"); // Call the onError callback
+        onError("Payment was cancelled by user"); // Call the onError callback
       },
     });
   };

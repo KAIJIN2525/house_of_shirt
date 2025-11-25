@@ -6,7 +6,7 @@ import {
   updateProduct,
 } from "../../redux/slices/productSlice";
 import axios from "axios";
-import { FaTimes } from "react-icons/fa"; // Import the "x" icon
+import { FaTimes } from "react-icons/fa";
 
 const EditProduct = () => {
   const dispatch = useDispatch();
@@ -32,7 +32,7 @@ const EditProduct = () => {
     images: [],
   });
 
-  const [uploading, setUploading] = useState(false); // state for image upload
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -60,13 +60,16 @@ const EditProduct = () => {
   const addVariant = () => {
     setProductData((prevData) => ({
       ...prevData,
-      variants: [...prevData.variants, { size: "", color: "", stock: 0 }],
+      variants: [
+        ...prevData.variants,
+        { size: "", color: "", stock: 0, lowStockThreshold: 5 },
+      ],
     }));
   };
 
   const removeVariant = (index) => {
     setProductData((prevData) => {
-      const updatedVariants = prevData.variants.filter((_, i) => i !== index); // Remove the variant at the specified index
+      const updatedVariants = prevData.variants.filter((_, i) => i !== index);
       return {
         ...prevData,
         variants: updatedVariants,
@@ -76,20 +79,32 @@ const EditProduct = () => {
 
   const updateVariant = (index, field, value) => {
     setProductData((prevData) => {
-      // Create a deep copy of the variants array and its objects
       const updatedVariants = prevData.variants.map((variant) => ({
-        ...variant, // Spread operator creates a new object for each variant
+        ...variant,
       }));
 
-      // Update the specific variant's field
-      updatedVariants[index][field] = value;
+      if (field === "stock" || field === "lowStockThreshold") {
+        value = Number(value);
+      }
 
-      // Return the updated state
+      updatedVariants[index][field] = value;
       return {
         ...prevData,
         variants: updatedVariants,
       };
     });
+  };
+
+  const validateVariants = () => {
+    const variantSet = new Set();
+    for (const variant of productData.variants) {
+      const key = `${variant.size}-${variant.color}`.toLowerCase();
+      if (variantSet.has(key)) {
+        return false;
+      }
+      variantSet.add(key);
+    }
+    return true;
   };
 
   const handleImageUpload = async (e) => {
@@ -109,12 +124,11 @@ const EditProduct = () => {
         }
       );
 
-      // Ensure altText is included in the image object
       setProductData((prevData) => ({
         ...prevData,
         images: [
           ...prevData.images,
-          { url: data.imageUrl, altText: data.altText || "Product Image" }, // Default altText if not provided
+          { url: data.imageUrl, altText: data.altText || "Product Image" },
         ],
       }));
       setUploading(false);
@@ -124,10 +138,9 @@ const EditProduct = () => {
     }
   };
 
-  // Function to delete an image
   const deleteImage = (index) => {
     setProductData((prevData) => {
-      const updatedImages = prevData.images.filter((_, i) => i !== index); // Remove the image at the specified index
+      const updatedImages = prevData.images.filter((_, i) => i !== index);
       return {
         ...prevData,
         images: updatedImages,
@@ -137,11 +150,23 @@ const EditProduct = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!validateVariants()) {
+      alert("Error: Duplicate variants (same size and color combination)");
+      return;
+    }
+
+    const hasNegativeStock = productData.variants.some((v) => v.stock < 0);
+    if (hasNegativeStock) {
+      alert("Error: Stock cannot be negative");
+      return;
+    }
+
     dispatch(updateProduct({ id, productData }));
     navigate("/admin/products");
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loader size="md" text="Loading product..." />;
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -219,7 +244,7 @@ const EditProduct = () => {
               key={index}
               className="mb-4 p-4 border border-gray-300 rounded-md"
             >
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-4 gap-4">
                 {/* Size */}
                 <div>
                   <label
@@ -271,9 +296,29 @@ const EditProduct = () => {
                     value={variant.stock}
                     onChange={(e) =>
                       updateVariant(index, "stock", Number(e.target.value))
-                    } // Convert to number
+                    }
                     className="w-full border border-gray-300 rounded-md p-2"
                     required
+                    min="0"
+                  />
+                </div>
+
+                {/* Low Stock Threshold */}
+                <div>
+                  <label
+                    htmlFor={`lowStock-${index}`}
+                    className="block font-semibold mb-2"
+                  >
+                    Low Stock Alert
+                  </label>
+                  <input
+                    type="number"
+                    value={variant.lowStockThreshold ?? 5}
+                    onChange={(e) =>
+                      updateVariant(index, "lowStockThreshold", e.target.value)
+                    }
+                    className="w-full border border-gray-300 rounded-md p-2"
+                    min="0"
                   />
                 </div>
               </div>
@@ -301,7 +346,7 @@ const EditProduct = () => {
             Image
           </label>
           <input type="file" name="image" onChange={handleImageUpload} />
-          {uploading && <p>Uploading image...</p>}
+          {uploading && <Loader size="sm" text="Uploading image..." />}
           <div className="flex gap-4 mt-4">
             {productData.images.map((image, index) => (
               <div key={index} className="relative">
@@ -310,7 +355,6 @@ const EditProduct = () => {
                   alt={image.altText || "Product Image"}
                   className="size-20 object-cover rounded-md shadow-md"
                 />
-                {/* Delete Button */}
                 <button
                   type="button"
                   onClick={() => deleteImage(index)}

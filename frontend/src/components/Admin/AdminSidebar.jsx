@@ -5,6 +5,7 @@ import {
   FaSignOutAlt,
   FaStore,
   FaUser,
+  FaWarehouse,
 } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { Link, NavLink, useNavigate } from "react-router-dom";
@@ -63,6 +64,18 @@ const AdminSidebar = () => {
         >
           <FaClipboardList className="size-4 " />
           <span>Orders</span>
+        </NavLink>
+
+        <NavLink
+          to="/admin/inventory"
+          className={({ isActive }) =>
+            isActive
+              ? "bg-gray-700 text-white py-3 px-4 rounded flex items-center space-x-2"
+              : "text-gray-300 hover:bg-gray-700 hover:text-white py-3 px-4 rounded flex items-center space-x-2"
+          }
+        >
+          <FaWarehouse className="size-4 " />
+          <span>Inventory</span>
         </NavLink>
 
         <NavLink

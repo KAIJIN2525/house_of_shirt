@@ -5,11 +5,12 @@ import { registerUser, loginUser } from "../redux/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { mergeCart } from "../redux/slices/cartSlice";
 import { toast } from "sonner";
-import { FaGoogle } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -46,25 +47,63 @@ const Register = () => {
       "width=500,height=600"
     );
 
-    const handleMessage = (event) => {
-      if (event.origin !== import.meta.env.VITE_BACKEND_URL) {
+    const handleMessage = async (event) => {
+      // Verify the origin
+      const backendUrl =
+        import.meta.env.VITE_BACKEND_URL || "http://localhost:9000";
+      if (
+        event.origin !== backendUrl &&
+        event.origin !== window.location.origin
+      ) {
         console.error("Invalid origin:", event.origin);
         return;
       }
 
-      if (event.data === "oauth_complete") {
-        googleLoginWindow.close();
-        dispatch(loginUser({})); // Fetch user data
-        navigate(redirect); // Redirect to the intended page
+      if (event.data.type === "oauth_complete") {
+        // Close the popup window
+        if (googleLoginWindow && !googleLoginWindow.closed) {
+          googleLoginWindow.close();
+        }
+
+        try {
+          // Save the token and user data to localStorage
+          localStorage.setItem("userToken", event.data.token);
+          localStorage.setItem("userInfo", JSON.stringify(event.data.user));
+
+          // Dispatch with Google OAuth data
+          await dispatch(
+            loginUser({
+              ...event.data.user,
+              token: event.data.token,
+              googleId: true, // Flag to indicate Google OAuth
+            })
+          ).unwrap();
+
+          toast.success("Google login successful!");
+
+          // Clean up listener
+          window.removeEventListener("message", handleMessage);
+        } catch (error) {
+          console.error("Login error:", error);
+          toast.error("Failed to complete login");
+        }
       }
     };
 
     window.addEventListener("message", handleMessage);
 
-    return () => {
-      window.removeEventListener("message", handleMessage);
-    };
+    // Cleanup on unmount or if window closes
+    const checkWindowClosed = setInterval(() => {
+      if (googleLoginWindow && googleLoginWindow.closed) {
+        clearInterval(checkWindowClosed);
+        window.removeEventListener("message", handleMessage);
+      }
+    }, 1000);
   };
+
+  const handlePasswordToggle = () => {
+    setShowPassword((prev) => !prev);
+  }
 
   return (
     <div className="flex">
@@ -117,7 +156,7 @@ const Register = () => {
             />
           </div>
 
-          <div className="mb-4">
+          <div className="mb-4 relative">
             <label
               className="block text-gray-700 text-sm font-semibold mb-2"
               htmlFor="password"
@@ -125,7 +164,7 @@ const Register = () => {
               Password
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={password}
               id="password"
               name="password"
@@ -133,6 +172,13 @@ const Register = () => {
               className="w-full p-2 border border-gray-300 rounded"
               placeholder="Enter your password"
             />
+            <button
+              onClick={handlePasswordToggle}
+              type="button"
+              className="absolute right-3 top-9 text-sm text-gray-600"
+            >
+              {showPassword ? <FaEyeSlash className="size-5" /> : <FaEye className="size-5" />}
+            </button>
           </div>
 
           <p className="text-xs text-gray-600 text-center mb-2">

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { LuLoader, LuUpload, LuX } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
+import Loader from "../../Common/Loader";
 import {
   fetchCategories,
   fetchTags,
@@ -192,7 +193,7 @@ const CategoriesTag = () => {
       </h1>
 
       {/* Display loading and error messages */}
-      {loading && <p className="text-center text-blue-600">Loading...</p>}
+      {loading && <Loader size="sm" text="Loading..." />}
       {error && <p className="text-center text-red-600">Error: {error}</p>}
 
       {/* Category Section */}
@@ -235,9 +236,7 @@ const CategoriesTag = () => {
               onChange={handleImageUpload}
               className="w-full p-2 border border-gray-300 rounded-md"
             />
-            {uploading && (
-              <p className="text-sm text-gray-600 mt-2">Uploading image...</p>
-            )}
+            {uploading && <Loader size="sm" text="Uploading image..." />}
             {categoryData.image?.url && (
               <div className="mt-4 relative">
                 <img

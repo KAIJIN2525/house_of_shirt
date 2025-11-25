@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { LuDollarSign, LuPackage, LuShoppingBag, LuTags, LuTrendingUp,  } from "react-icons/lu";
 import { FaPlusCircle } from "react-icons/fa";
 import { FiAlertTriangle } from "react-icons/fi";
+import Loader from "../Common/Loader";
 import CreateProduct from "./Product/CreateProduct";
 import CategoriesTag from "./Product/CategoriesTag";
 

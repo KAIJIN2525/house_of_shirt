@@ -66,32 +66,58 @@ const Login = () => {
       "width=500,height=600"
     );
 
-    const handleMessage = (event) => {
-      if (event.origin !== import.meta.env.VITE_BACKEND_URL) {
+    const handleMessage = async (event) => {
+      // Verify the origin
+      const backendUrl =
+        import.meta.env.VITE_BACKEND_URL || "http://localhost:9000";
+      if (
+        event.origin !== backendUrl &&
+        event.origin !== window.location.origin
+      ) {
         console.error("Invalid origin:", event.origin);
         return;
       }
 
       if (event.data.type === "oauth_complete") {
-        googleLoginWindow.close();
+        // Close the popup window
+        if (googleLoginWindow && !googleLoginWindow.closed) {
+          googleLoginWindow.close();
+        }
 
-        // Save the token and user data to localStorage
-        localStorage.setItem("userToken", event.data.token);
-        localStorage.setItem("userInfo", JSON.stringify(event.data.user));
+        try {
+          // Save the token and user data to localStorage
+          localStorage.setItem("userToken", event.data.token);
+          localStorage.setItem("userInfo", JSON.stringify(event.data.user));
 
-        // Dispatch the login action to update Redux state
-        dispatch(loginUser(event.data.user));
+          // Dispatch with Google OAuth data
+          await dispatch(
+            loginUser({
+              ...event.data.user,
+              token: event.data.token,
+              googleId: true, // Flag to indicate Google OAuth
+            })
+          ).unwrap();
 
-        // Redirect the user
-        navigate("/");
+          toast.success("Google login successful!");
+
+          // Clean up listener
+          window.removeEventListener("message", handleMessage);
+        } catch (error) {
+          console.error("Login error:", error);
+          toast.error("Failed to complete login");
+        }
       }
     };
 
     window.addEventListener("message", handleMessage);
 
-    return () => {
-      window.removeEventListener("message", handleMessage);
-    };
+    // Cleanup on unmount or if window closes
+    const checkWindowClosed = setInterval(() => {
+      if (googleLoginWindow && googleLoginWindow.closed) {
+        clearInterval(checkWindowClosed);
+        window.removeEventListener("message", handleMessage);
+      }
+    }, 1000);
   };
 
   return (

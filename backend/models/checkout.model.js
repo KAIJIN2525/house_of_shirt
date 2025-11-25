@@ -49,12 +49,18 @@ const checkoutSchema = new mongoose.Schema(
     guestId: {
       type: String,
     }, // For guest users
+    guestEmail: {
+      type: String,
+    }, // For sending order emails to guests
     checkoutItems: [checkoutItemSchema],
     shippingAddress: {
+      fullName: { type: String, required: true },
       address: { type: String, required: true },
       city: { type: String, required: true },
+      state: { type: String, required: true },
       postalCode: { type: String, required: true },
       country: { type: String, required: true },
+      phoneNumber: { type: String, required: true },
     },
     paymentMethod: {
       type: String,
@@ -73,7 +79,7 @@ const checkoutSchema = new mongoose.Schema(
     },
     paymentStatus: {
       type: String,
-      enum: ["pending","unconfirmed", "success", "failed"], // Payment statuses
+      enum: ["pending", "unconfirmed", "success", "failed"], // Payment statuses
       default: "pending",
     },
     paymentDetails: paymentDetailsSchema, // Store payment-specific details
