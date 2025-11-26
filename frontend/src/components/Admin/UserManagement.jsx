@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FaTrash, FaTrashAlt } from "react-icons/fa";
+import Loader from "../Common/Loader";
 import { LuTrash2 } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";

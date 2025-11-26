@@ -8,7 +8,7 @@ import {
 } from "react-icons/hi2";
 import SearchBar from "./SearchBar";
 import { IoMdClose } from "react-icons/io";
-import { FaRegHeart } from "react-icons/fa"; // Import heart icons
+import { FaRegHeart } from "react-icons/fa"; 
 import { useSelector } from "react-redux";
 
 const Navbar = () => {
@@ -22,7 +22,7 @@ const Navbar = () => {
     cart?.products?.reduce((total, product) => total + product.quantity, 0) ||
     0;
 
-  const favoritesCount = favorites.length; // Get the number of items in favorites
+  const favoritesCount = favorites.length; 
 
   const toggleCartDrawer = () => {
     setDrawerOpen(!drawerOpen);

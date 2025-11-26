@@ -66,8 +66,6 @@ app.use(passport.session());
 
 const PORT = process.env.PORT || 3000;
 
-// connect connectDB(): promise<void>
-
 connectDB();
 
 app.get("/", (req, res) => {
