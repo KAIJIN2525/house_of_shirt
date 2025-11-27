@@ -1,5 +1,22 @@
 import nodemailer from "nodemailer";
 
+// Get the correct frontend URL based on environment
+const getFrontendUrl = () => {
+  // Check if FRONTEND_URL is set in environment variables
+  if (process.env.FRONTEND_URL) {
+    return process.env.FRONTEND_URL;
+  }
+  
+  // Fallback to production URL if not set
+  if (process.env.NODE_ENV === 'production') {
+    console.warn('⚠️ FRONTEND_URL not set! Using default production URL.');
+    return 'https://house-of-shirt-axfe.vercel.app';
+  }
+  
+  // Default to localhost for development
+  return 'http://localhost:5173';
+};
+
 // Create email transporter
 const createTransporter = () => {
   // For development, you can use Gmail or a test service like Mailtrap
@@ -24,14 +41,19 @@ const createTransporter = () => {
     });
   } else {
     // SMTP configuration for custom email providers
+    const smtpPort = parseInt(process.env.SMTP_PORT || "587");
     return nodemailer.createTransport({
       host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT || 587,
-      secure: process.env.SMTP_SECURE === "true", // true for 465, false for other ports
+      port: smtpPort,
+      secure: smtpPort === 465, // true for 465, false for other ports (587 uses STARTTLS)
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD,
       },
+      tls: {
+        // Do not fail on invalid certificates (for some providers)
+        rejectUnauthorized: false
+      }
     });
   }
 };
@@ -44,7 +66,10 @@ export const sendVerificationEmail = async (
 ) => {
   try {
     const transporter = createTransporter();
-    const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
+    const frontendUrl = getFrontendUrl();
+    const verificationUrl = `${frontendUrl}/verify-email?token=${verificationToken}`;
+    
+    console.log(`📧 Sending verification email to ${email} with URL: ${verificationUrl}`);
 
     const mailOptions = {
       from: `"House of Shirt" <${
@@ -200,7 +225,7 @@ export const sendLowStockAlert = async (products) => {
               </table>
               <p><strong>Action Required:</strong> Please restock these items as soon as possible to avoid running out of inventory.</p>
               <p>You can manage your inventory in the <a href="${
-                process.env.FRONTEND_URL
+                getFrontendUrl()
               }/admin/inventory">Admin Dashboard</a>.</p>
               <p>Best regards,<br>House of Shirt Inventory System</p>
             </div>
@@ -226,7 +251,7 @@ export const sendLowStockAlert = async (products) => {
         
         Please restock these items as soon as possible.
         
-        Manage inventory at: ${process.env.FRONTEND_URL}/admin/inventory
+        Manage inventory at: ${getFrontendUrl()}/admin/inventory
       `,
     };
 
@@ -245,7 +270,10 @@ export const sendLowStockAlert = async (products) => {
 export const sendPasswordResetEmail = async (email, resetToken, userName) => {
   try {
     const transporter = createTransporter();
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+    const frontendUrl = getFrontendUrl();
+    const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
+    
+    console.log(`📧 Sending password reset email to ${email} with URL: ${resetUrl}`);
 
     const mailOptions = {
       from: `"House of Shirt" <${
